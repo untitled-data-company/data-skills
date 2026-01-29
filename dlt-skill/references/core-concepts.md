@@ -87,9 +87,11 @@ Example secrets structure:
 [sources]
 api_secret_key = '<your-api-key>'
 
-[destination.duckdb]
-credentials = '<connection-string>'
+[destination.bigquery]
+credentials = '<path-to-service-account.json>'
 ```
+
+**Note**: DuckDB doesn't require credentials - just specify the file path in `.dlt/config.toml` or directly in the pipeline destination parameter.
 
 Secret names correspond to argument names in source functions, enabling automatic credential injection.
 

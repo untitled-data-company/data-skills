@@ -21,7 +21,7 @@
 # project_id = "my-project"
 
 # [destination.duckdb]
-# credentials = "data/database.duckdb"
+# credentials = "data/database.duckdb"  # Just the file path, no authentication needed
 
 # [destination.snowflake]
 # database = "ANALYTICS"

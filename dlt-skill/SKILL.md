@@ -85,7 +85,46 @@ Use appropriate template from [assets/templates/](assets/templates/):
 - `declarative_rest_pipeline.py` - For REST APIs
 - `custom_python_pipeline.py` - For custom sources
 
-### 4. Configure Credentials
+### 4. Install Required Packages
+
+Install dlt and destination-specific packages. The skill automatically detects the project's dependency manager (uv, pip, poetry, pipenv) or asks the user which to use.
+
+**Use the helper script:**
+```bash
+python scripts/install_packages.py --destination <destination_name>
+```
+
+**Examples:**
+```bash
+# For BigQuery
+python scripts/install_packages.py --destination bigquery
+
+# For DuckDB (default, no extra dependencies needed)
+python scripts/install_packages.py --destination duckdb
+
+# For Snowflake
+python scripts/install_packages.py --destination snowflake
+```
+
+**What gets installed:**
+- `dlt[destination]` - dlt with destination-specific extras
+- `dlt[workspace]` - Dashboard/pipeline inspection support (for `pipeline.show()`)
+
+**Manual installation** (if preferred):
+```bash
+# Using pip
+pip install dlt[bigquery] dlt[workspace]
+
+# Using uv
+uv pip install dlt[bigquery] dlt[workspace]
+
+# Using poetry
+poetry add dlt[bigquery] dlt[workspace]
+```
+
+**Note**: DuckDB support is included by default in dlt, so no extra dependencies are needed for DuckDB destinations.
+
+### 5. Configure Credentials
 
 Create or update `.dlt/secrets.toml`:
 
@@ -102,7 +141,9 @@ Use the template: [assets/templates/.dlt/secrets.toml](assets/templates/.dlt/sec
 
 **Important**: Remind user to add `.dlt/secrets.toml` to `.gitignore`!
 
-### 5. Configure Pipeline Settings
+**Note for DuckDB**: DuckDB doesn't require credentials in secrets.toml. Just specify the database file path in the pipeline or config.toml.
+
+### 6. Configure Pipeline Settings
 
 Create or update `.dlt/config.toml` for non-sensitive settings:
 
@@ -117,7 +158,7 @@ location = "US"
 
 Use the template: [assets/templates/.dlt/config.toml](assets/templates/.dlt/config.toml)
 
-### 6. Implement Pipeline Logic
+### 7. Implement Pipeline Logic
 
 Flesh out the pipeline code based on requirements:
 
@@ -138,7 +179,7 @@ Flesh out the pipeline code based on requirements:
 - Configure write dispositions and primary keys
 - See: [references/custom-sources.md](references/custom-sources.md)
 
-### 7. Configure Incremental Loading (If Needed)
+### 8. Configure Incremental Loading (If Needed)
 
 For pipelines that should load only new/changed data:
 - Identify cursor field (timestamp, ID)
@@ -148,7 +189,7 @@ For pipelines that should load only new/changed data:
 
 See: [references/incremental-loading.md](references/incremental-loading.md)
 
-### 8. Test and Run Pipeline
+### 9. Test and Run Pipeline
 
 ```python
 python <pipeline_file>.py
@@ -156,7 +197,7 @@ python <pipeline_file>.py
 
 Check for errors and verify data is loaded correctly.
 
-### 9. Inspect Results
+### 10. Inspect Results
 
 Open the dlt dashboard to inspect loaded data:
 ```bash
@@ -407,6 +448,7 @@ Read these files when needed for detailed information on specific topics.
 
 ### Scripts (scripts/)
 
+- **[install_packages.py](scripts/install_packages.py)** - Automatically install dlt packages with dependency manager detection
 - **[open_dashboard.py](scripts/open_dashboard.py)** - Helper to open dlt pipeline dashboard
 
 ## Workflow Example: Creating a Pokemon API Pipeline
