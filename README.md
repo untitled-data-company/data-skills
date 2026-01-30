@@ -62,4 +62,4 @@ This skill was created using the Claude Agent SDK skill-creator tool. To modify 
 
 ## License
 
-This skill is provided as-is for use with Claude. The dlt library itself is open-source and maintained by [dltHub](https://github.com/dlt-hub/dlt).
+This skill is provided as-is for use with Claude and other skill enabled LLMs. This skill is maintained by [Untitled Data Company](https://untitleddata.company/). The dlt library itself is open-source and maintained by [dltHub](https://github.com/dlt-hub/dlt).
