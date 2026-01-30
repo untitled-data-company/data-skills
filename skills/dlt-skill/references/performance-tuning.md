@@ -1,5 +1,16 @@
 # Performance Tuning in dlt
 
+## Table of Contents
+- [Overview](#overview)
+- [Worker Configuration](#worker-configuration)
+- [Buffer Management](#buffer-management)
+- [File Rotation & Compression](#file-rotation--compression)
+- [Extract Optimization Techniques](#extract-optimization-techniques)
+- [Storage Management](#storage-management)
+- [Configuration Scoping](#configuration-scoping)
+- [Performance Best Practices](#performance-best-practices)
+- [Common Optimization Scenarios](#common-optimization-scenarios)
+
 ## Overview
 
 dlt pipelines have three main stages, each with configurable parallelism:

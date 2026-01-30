@@ -22,7 +22,7 @@ This Claude skill provides comprehensive guidance for building data pipelines us
   - Performance optimization
   - Debugging and troubleshooting
 
-- **Comprehensive resources:**
+- **Bundled resources:**
   - Reference documentation on core concepts, sources, and destinations
   - Pipeline templates for all three approaches
   - Helper scripts for common tasks
@@ -30,13 +30,9 @@ This Claude skill provides comprehensive guidance for building data pipelines us
 
 ## Installation
 
-Run this command in your terminal:
-
 ```bash
 npx skills add untitled-data-company/data-skills --skill dlt-skill
 ```
-
-This will automatically install the skill into your Claude Code environment.
 
 ### Verify Installation
 
@@ -59,26 +55,29 @@ Once installed, the skill will automatically activate when you:
 3. **Custom Data Source**: Build a custom Python pipeline using packages like simple-salesforce
 4. **Performance Tuning**: Optimize large-scale data pipelines for better throughput
 
-## Contents
+## Skill Contents
 
-- `SKILL.md` - Main skill instructions and decision tree
-- `references/` - Comprehensive documentation on dlt concepts
-  - `core-concepts.md` - dlt fundamentals
-  - `verified-sources.md` - Pre-built connectors guide
-  - `rest-api-source.md` - REST API configuration
-  - `custom-sources.md` - Custom Python sources
-  - `incremental-loading.md` - Incremental loading strategies
-  - `performance-tuning.md` - Optimization guide
-  - `troubleshooting.md` - Common issues and solutions
-- `assets/templates/` - Pipeline templates for quick start
-  - `verified_source_pipeline.py` - Verified source template
-  - `declarative_rest_pipeline.py` - REST API template
-  - `custom_python_pipeline.py` - Custom Python template
-  - `.dlt/` - Configuration templates
-- `scripts/` - Helper scripts for common tasks
-  - `install_packages.py` - Auto-detect and install dependencies
-  - `open_dashboard.py` - Open dlt pipeline dashboard
+```
+dlt-skill/
+├── SKILL.md                 # Main skill instructions (for Claude)
+├── references/              # Comprehensive documentation
+│   ├── core-concepts.md     # dlt fundamentals
+│   ├── verified-sources.md  # Pre-built connectors guide
+│   ├── rest-api-source.md   # REST API configuration
+│   ├── custom-sources.md    # Custom Python sources
+│   ├── incremental-loading.md
+│   ├── performance-tuning.md
+│   └── troubleshooting.md
+├── assets/templates/        # Pipeline templates
+│   ├── verified_source_pipeline.py
+│   ├── declarative_rest_pipeline.py
+│   ├── custom_python_pipeline.py
+│   └── .dlt/                # Configuration templates
+└── scripts/                 # Helper scripts
+    ├── install_packages.py  # Auto-detect and install dependencies
+    └── open_dashboard.py    # Open dlt pipeline dashboard
+```
 
 ## License
 
-This skill is provided as-is for use with Claude and other skill enabled LLMs. This skill is maintained by [Untitled Data Company](https://untitleddata.company/). The dlt library itself is open-source and maintained by [dltHub](https://github.com/dlt-hub/dlt).
+This skill is provided as-is for use with Claude and other skill-enabled LLMs. Maintained by [Untitled Data Company](https://untitleddata.company/). The dlt library itself is open-source and maintained by [dltHub](https://github.com/dlt-hub/dlt).

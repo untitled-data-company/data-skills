@@ -1,5 +1,14 @@
 # Incremental Loading in dlt
 
+## Table of Contents
+- [Overview](#overview)
+- [Write Dispositions](#write-dispositions)
+- [Choosing the Right Strategy](#choosing-the-right-strategy)
+- [Cursor-Based Incremental Loading](#cursor-based-incremental-loading)
+- [Merge Strategies](#merge-strategies)
+- [Advanced Techniques](#advanced-techniques)
+- [Best Practices](#best-practices)
+
 ## Overview
 
 Incremental loading transfers only new or modified data rather than reprocessing existing records. This reduces latency and operational costs while requiring careful state management.

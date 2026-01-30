@@ -1,5 +1,14 @@
 # dlt Core Concepts
 
+## Table of Contents
+- [What is dlt?](#what-is-dlt)
+- [Core Components](#core-components)
+- [Key Capabilities](#key-capabilities)
+- [Basic Workflow](#basic-workflow)
+- [Configuration](#configuration)
+- [Write Dispositions](#write-dispositions)
+- [Data Inspection](#data-inspection)
+
 ## What is dlt?
 
 dlt is an open-source Python library that loads data from various data sources into well-structured datasets. It emphasizes being easy to use, flexible, and scalable while providing lightweight interfaces for data extraction, loading, inspection, and transformation.

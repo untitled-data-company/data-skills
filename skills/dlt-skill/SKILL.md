@@ -1,6 +1,5 @@
 ---
 name: dlt-skill
-version: 0.1.0
 description: >
   Expert assistant for creating and maintaining dlt (data load tool) data pipelines.
   Use this skill when users want to create data ingestion pipelines from APIs, databases,
@@ -108,22 +107,28 @@ python scripts/install_packages.py --destination snowflake
 ```
 
 **What gets installed:**
-- `dlt[destination]` - dlt with destination-specific extras
-- `dlt[workspace]` - Dashboard/pipeline inspection support (for `pipeline.show()`)
+- `dlt[destination,workspace]` - dlt with destination-specific extras and dashboard support
 
 **Manual installation** (if preferred):
 ```bash
-# Using pip
-pip install dlt[bigquery] dlt[workspace]
+# Using pip (for BigQuery destination)
+pip install "dlt[bigquery,workspace]"
 
-# Using uv
-uv pip install dlt[bigquery] dlt[workspace]
+# Using uv (for BigQuery destination)
+uv add "dlt[bigquery,workspace]"
 
-# Using poetry
-poetry add dlt[bigquery] dlt[workspace]
+# Using poetry (for BigQuery destination)
+poetry add "dlt[bigquery,workspace]"
+
+# For DuckDB (workspace only, duckdb is included by default)
+pip install "dlt[workspace]"
+uv add "dlt[workspace]"
+poetry add "dlt[workspace]"
 ```
 
-**Note**: DuckDB support is included by default in dlt, so no extra dependencies are needed for DuckDB destinations.
+**Important**: The `workspace` extra is **required** for `dlt pipeline <name> show` and dashboard functionality. Always include it in your installation.
+
+**Note**: DuckDB support is included by default in dlt, so only the `workspace` extra is needed for DuckDB destinations.
 
 ### 5. Configure Credentials
 
@@ -199,6 +204,8 @@ python <pipeline_file>.py
 Check for errors and verify data is loaded correctly.
 
 ### 10. Inspect Results
+
+**Prerequisite**: Ensure `dlt[workspace]` is installed (included by default when using `install_packages.py`).
 
 Open the dlt dashboard to inspect loaded data:
 ```bash
@@ -449,8 +456,8 @@ Read these files when needed for detailed information on specific topics.
 
 ### Scripts (scripts/)
 
-- **[install_packages.py](scripts/install_packages.py)** - Automatically install dlt packages with dependency manager detection
-- **[open_dashboard.py](scripts/open_dashboard.py)** - Helper to open dlt pipeline dashboard
+- **[install_packages.py](scripts/install_packages.py)** - Automatically install dlt packages with dependency manager detection (includes `workspace` extra by default)
+- **[open_dashboard.py](scripts/open_dashboard.py)** - Helper to open dlt pipeline dashboard (requires `dlt[workspace]`)
 
 ## Workflow Example: Creating a Pokemon API Pipeline
 
@@ -487,11 +494,7 @@ Read these files when needed for detailed information on specific topics.
 8. **Inspect**: Open dashboard to verify data
 
 ## Key Reminders
-
 - **Always ask about destination** - Don't assume
-- **Security first** - Never commit secrets, always use `.dlt/secrets.toml`
-- **Start simple** - Use verified sources when available
-- **Provide .gitignore** - Include template to prevent committing secrets
-- **Test incrementally** - Run pipeline early and often
+- **Security first** - Never commit secrets; use `.dlt/secrets.toml` and provide `.gitignore`
+- **Start simple** - Use verified sources when available; test incrementally
 - **Read references** - Load detailed docs only when needed
-- **Expert mindset** - Provide data engineering best practices and guidance

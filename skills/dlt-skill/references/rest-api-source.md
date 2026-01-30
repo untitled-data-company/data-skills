@@ -1,5 +1,21 @@
 # Declarative REST API Source
 
+## Table of Contents
+- [Overview](#overview)
+- [Configuration Structure](#configuration-structure)
+- [Client Configuration](#client-configuration)
+- [Authentication Methods](#authentication-methods)
+- [Resource Configuration](#resource-configuration)
+- [Endpoint Configuration](#endpoint-configuration)
+- [Pagination Patterns](#pagination-patterns)
+- [Resource Relationships (Parent-Child)](#resource-relationships-parent-child)
+- [Incremental Loading](#incremental-loading)
+- [Processing Steps](#processing-steps)
+- [Resource Defaults](#resource-defaults)
+- [Complete Examples](#complete-examples)
+- [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
+
 ## Overview
 
 The declarative REST API source enables data extraction from REST APIs using a configuration dictionary. This approach is easier to use than custom Python code but can handle complex API patterns including authentication, pagination, and nested resources.

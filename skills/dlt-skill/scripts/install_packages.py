@@ -80,6 +80,21 @@ def ask_user_for_manager() -> str:
             print("Invalid choice. Please enter 1-4.")
 
 
+def ensure_uv_project_initialized() -> None:
+    """
+    Ensure the project is initialized for uv by checking for pyproject.toml.
+    If not present, runs 'uv init' to create it.
+    """
+    if not Path("pyproject.toml").exists():
+        print("No pyproject.toml found. Initializing project with 'uv init'...")
+        try:
+            subprocess.run(["uv", "init"], check=True)
+            print("✅ Project initialized with uv")
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to initialize project: {e}", file=sys.stderr)
+            sys.exit(1)
+
+
 def install_packages(manager: str, packages: list[str]) -> None:
     """
     Install packages using the specified dependency manager.
@@ -92,7 +107,8 @@ def install_packages(manager: str, packages: list[str]) -> None:
     print(f"  {' '.join(packages)}")
 
     if manager == "uv":
-        cmd = ["uv", "pip", "install"] + packages
+        ensure_uv_project_initialized()
+        cmd = ["uv", "add"] + packages
     elif manager == "pip":
         cmd = [sys.executable, "-m", "pip", "install"] + packages
     elif manager == "poetry":
@@ -121,21 +137,22 @@ def get_required_packages(destination: Optional[str] = None, include_workspace: 
     Returns:
         List of package specifications
     """
-    packages = []
+    # Build combined extras list for a single dlt package
+    extras = []
 
-    # Base dlt package
+    # Add destination extra (duckdb is included by default, so skip it)
     if destination and destination != "duckdb":
-        # Install dlt with destination-specific extras
-        packages.append(f"dlt[{destination}]")
-    else:
-        # Just install base dlt (duckdb is included by default)
-        packages.append("dlt")
+        extras.append(destination)
 
     # Add workspace support for dashboard/pipeline show command
     if include_workspace:
-        packages.append("dlt[workspace]")
+        extras.append("workspace")
 
-    return packages
+    # Return single package with combined extras, or base dlt if no extras
+    if extras:
+        return [f"dlt[{','.join(extras)}]"]
+    else:
+        return ["dlt"]
 
 
 def main():

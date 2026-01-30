@@ -1,5 +1,18 @@
 # Troubleshooting dlt Pipelines
 
+## Table of Contents
+- [Installation and Setup](#installation-and-setup)
+- [Configuration and Secrets](#configuration-and-secrets)
+- [Pipeline Execution](#pipeline-execution)
+- [Incremental Loading](#incremental-loading)
+- [REST API Source](#rest-api-source)
+- [Performance Issues](#performance-issues)
+- [Destination-Specific Issues](#destination-specific-issues)
+- [Data Quality Issues](#data-quality-issues)
+- [Debugging Techniques](#debugging-techniques)
+- [Getting Help](#getting-help)
+- [Error Message Reference](#error-message-reference)
+
 ## Common Issues and Solutions
 
 ### Installation and Setup

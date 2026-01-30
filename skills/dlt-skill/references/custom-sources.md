@@ -1,5 +1,18 @@
 # Creating Custom Sources in dlt
 
+## Table of Contents
+- [Overview](#overview)
+- [Core Decorators](#core-decorators)
+- [Yield Patterns](#yield-patterns)
+- [Dynamic Resource Creation](#dynamic-resource-creation)
+- [Using Python Packages](#using-python-packages)
+- [Configuration and Secrets](#configuration-and-secrets)
+- [REST API Helper](#rest-api-helper)
+- [Schema Management](#schema-management)
+- [Best Practices](#best-practices)
+- [Complete Example: Multi-Endpoint API](#complete-example-multi-endpoint-api)
+- [Error Handling](#error-handling)
+
 ## Overview
 
 Custom sources allow you to extract data from any Python-accessible data source. Use custom sources when:

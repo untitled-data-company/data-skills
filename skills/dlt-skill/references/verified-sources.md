@@ -1,5 +1,17 @@
 # dlt Verified Sources
 
+## Table of Contents
+- [Overview](#overview)
+- [Key Characteristics](#key-characteristics)
+- [Difference from Core Sources](#difference-from-core-sources)
+- [Available Verified Sources](#available-verified-sources)
+- [Using Verified Sources](#using-verified-sources)
+- [Customizing Verified Sources](#customizing-verified-sources)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
+- [Requesting New Verified Sources](#requesting-new-verified-sources)
+- [Troubleshooting](#troubleshooting)
+
 ## Overview
 
 Verified sources are pre-built, rigorously tested connectors for specific platforms and services. They're developed and maintained by the dlt team and community, providing production-ready pipelines with minimal setup.
