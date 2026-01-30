@@ -173,6 +173,30 @@ pipeline.run(source(), refresh='drop_sources')
 
 ### REST API Source
 
+#### Pipeline context conflicts with dlt.attach()
+
+**Problem:** Using `dlt.attach()` inside a resource that runs within another pipeline causes `ContainerInjectableContextMangled` (or similar pipeline context) errors. The same can happen when opening a dlt-managed or pipeline-associated connection from inside a resource that is part of a different pipeline.
+
+**Solution:** Read data **before** creating or running the pipeline, using direct database connections (no dlt context):
+
+```python
+import duckdb
+
+def get_data_from_other_pipeline():
+    """Read outside of dlt context to avoid conflicts."""
+    conn = duckdb.connect("other_pipeline.duckdb", read_only=True)
+    result = conn.execute("SELECT * FROM my_table").fetchall()
+    conn.close()
+    return result
+
+# Then use the data in your pipeline
+data = get_data_from_other_pipeline()
+pipeline = dlt.pipeline(...)
+pipeline.run(my_source(data))
+```
+
+Use this pattern when a REST API source is seeded from another pipeline’s database: load the seed data in a plain function with a direct DB connection, then pass that data into your seed resource so no `dlt.attach()` or pipeline context is used during extraction.
+
 #### Authentication failing
 **Checklist**:
 1. Correct auth type for the API

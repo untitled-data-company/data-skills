@@ -1,21 +1,18 @@
 ---
 name: dlt-skill
 description: >
-  Expert assistant for creating and maintaining dlt (data load tool) data pipelines.
-  Use this skill when users want to create data ingestion pipelines from APIs, databases,
-  or other sources; set up pipelines using dlt verified sources (Salesforce, GitHub, Stripe);
-  build declarative REST API pipelines; write custom Python-based data extraction pipelines;
-  configure dlt destinations (DuckDB, BigQuery, Snowflake); implement incremental loading
-  strategies; optimize pipeline performance; debug or troubleshoot dlt pipelines; create
-  or modify .dlt/config.toml and .dlt/secrets.toml files; or open the dlt pipeline dashboard
-  for inspection. This skill acts as an expert data engineer providing best practices and guidance.
+  Creates and maintains dlt (data load tool) pipelines from APIs, databases, and other sources.
+  Use when the user wants to build or debug pipelines; use verified sources (e.g. Salesforce, GitHub, Stripe)
+  or declarative REST API or custom Python; configure destinations (e.g. DuckDB, BigQuery, Snowflake);
+  implement incremental loading; or edit .dlt config and secrets.
+  Use when the user mentions data ingestion, dlt pipeline, dlt init, rest_api_source, incremental load, or pipeline dashboard.
 ---
 
 # dlt Pipeline Creator
 
-## Overview
+Choose pipeline type with the decision tree below; then follow the Core Workflow.
 
-This skill helps create and maintain data pipelines using dlt (data load tool from dlthub.com). It provides expert guidance on pipeline architecture, configuration, and best practices for extracting data from various sources and loading it into destinations.
+**Quick start:** 1) Use the decision tree. 2) Follow the Core Workflow. 3) Use patterns and references as needed.
 
 ## Pipeline Type Decision Tree
 
@@ -65,13 +62,13 @@ Ask clarifying questions:
 ### 2. Choose Pipeline Approach
 
 Based on the decision tree above, select:
-- **Verified Source** - Pre-built, tested connector
+- **Verified source** - Pre-built, tested connector
 - **Declarative REST API** - Config-based REST API pipeline
 - **Custom Python** - Full control with Python code
 
 ### 3. Initialize or Create Pipeline
 
-#### Verified Source
+#### Verified source
 ```bash
 dlt init <source_name> <destination_name>
 ```
@@ -81,54 +78,18 @@ Examples:
 - `dlt init stripe snowflake`
 
 #### Declarative REST API or Custom Python
-Use appropriate template from [assets/templates/](assets/templates/):
+Use templates from this skill's [assets/templates/](assets/templates/) (copy into the project if needed):
 - `declarative_rest_pipeline.py` - For REST APIs
 - `custom_python_pipeline.py` - For custom sources
 
 ### 4. Install Required Packages
 
-Install dlt and destination-specific packages. The skill automatically detects the project's dependency manager (uv, pip, poetry, pipenv) or asks the user which to use.
-
-**Use the helper script:**
+**Recommended:** Use the helper script (detects pip/uv/poetry):
 ```bash
 python scripts/install_packages.py --destination <destination_name>
 ```
 
-**Examples:**
-```bash
-# For BigQuery
-python scripts/install_packages.py --destination bigquery
-
-# For DuckDB (default, no extra dependencies needed)
-python scripts/install_packages.py --destination duckdb
-
-# For Snowflake
-python scripts/install_packages.py --destination snowflake
-```
-
-**What gets installed:**
-- `dlt[destination,workspace]` - dlt with destination-specific extras and dashboard support
-
-**Manual installation** (if preferred):
-```bash
-# Using pip (for BigQuery destination)
-pip install "dlt[bigquery,workspace]"
-
-# Using uv (for BigQuery destination)
-uv add "dlt[bigquery,workspace]"
-
-# Using poetry (for BigQuery destination)
-poetry add "dlt[bigquery,workspace]"
-
-# For DuckDB (workspace only, duckdb is included by default)
-pip install "dlt[workspace]"
-uv add "dlt[workspace]"
-poetry add "dlt[workspace]"
-```
-
-**Important**: The `workspace` extra is **required** for `dlt pipeline <name> show` and dashboard functionality. Always include it in your installation.
-
-**Note**: DuckDB support is included by default in dlt, so only the `workspace` extra is needed for DuckDB destinations.
+**Manual:** `pip install "dlt[<destination>,workspace]"` (e.g. `bigquery`, `snowflake`). For DuckDB use `dlt[workspace]` only. The `workspace` extra is required for `dlt pipeline <name> show` and the dashboard.
 
 ### 5. Configure Credentials
 
@@ -168,7 +129,7 @@ Use the template: [assets/templates/.dlt/config.toml](assets/templates/.dlt/conf
 
 Flesh out the pipeline code based on requirements:
 
-**For Verified Sources**:
+**For verified sources**:
 - Customize resource selection with `.with_resources()`
 - Configure incremental loading with `.apply_hints()`
 - See: [references/verified-sources.md](references/verified-sources.md)
@@ -219,7 +180,7 @@ python scripts/open_dashboard.py <pipeline_name>
 
 ## Pipeline Patterns
 
-### Pattern 1: Verified Source - Select Specific Resources
+### Pattern 1: Verified source — Select specific resources
 
 ```python
 from salesforce import salesforce_source
@@ -317,131 +278,85 @@ config = {
 }
 ```
 
-## Best Practices as an Expert Data Engineer
+### Pattern 5: Non-endpoint resources for REST API sources (e.g. Database-Seeded or File-Seeded parameters)
 
-### 1. Security
-- **Never hardcode credentials** - Always use `.dlt/secrets.toml`
-- **Add secrets to .gitignore** - Provide `.gitignore` template
-- **Use environment-specific configs** - Separate dev/prod configurations
+Use non-endpoint resources (e.g. Database-Seeded or File-Seeded parameters) to drive REST API calls from a database, file, or other non-API source. Pre-fetch data **outside** the dlt pipeline context to avoid `dlt.attach()` / context conflicts. The seed resource must **yield a list** of dicts so each row drives one API request.
 
-### 2. Data Quality
-- **Set primary keys** - Essential for merge operations and deduplication
-- **Use appropriate write dispositions**:
-  - `append` for immutable event data
-  - `merge` for stateful data that changes
-  - `replace` for full snapshots
-- **Validate data** - Check for required fields before yielding
+```python
+import duckdb
+import dlt
+from dlt.sources.rest_api import rest_api_source
 
-### 3. Performance
-- **Yield pages, not individual items** - Reduces pipeline overhead
-- **Configure parallelism** - Adjust workers for extract/normalize/load stages
-- **Enable file rotation** - For large datasets (millions+ records)
-- **Use incremental loading** - Reduce data transfer and API calls
+# 1. Pre-fetch data from database (outside dlt context)
+def get_locations():
+    conn = duckdb.connect("locations.duckdb", read_only=True)
+    result = conn.execute("SELECT id, lat, lng FROM locations").fetchall()
+    conn.close()
+    return [{"id": r[0], "lat": r[1], "lng": r[2]} for r in result]
 
-See: [references/performance-tuning.md](references/performance-tuning.md)
+# 2. Create seed resource
+@dlt.resource(selected=False)
+def locations():
+    yield get_locations()  # Yield as LIST
 
-### 4. Maintainability
-- **Document pipeline purpose** - Add docstrings to sources and resources
-- **Use descriptive names** - Clear pipeline, resource, and table names
-- **Follow dlt patterns** - Use decorators and generators correctly
-- **Handle errors gracefully** - Add try-except blocks for API calls
+# 3. Configure REST API with resolve
+config = {
+    "client": {"base_url": "https://api.weather.com/"},
+    "resources": [
+        locations(),
+        {
+            "name": "weather",
+            "endpoint": {
+                "path": "forecast",
+                "params": {
+                    "lat": "{resources.locations.lat}",
+                    "lng": "{resources.locations.lng}"
+                },
+                "data_selector": "$",
+                "paginator": "single_page"
+            },
+            "include_from_parent": ["id"],
+            "primary_key": "_locations_id"
+        }
+    ]
+}
 
-### 5. Incremental Loading Strategy
-- **Choose the right cursor** - Timestamps usually better than IDs
-- **Handle late data** - Use lag windows when needed
-- **Test incremental logic** - Verify no data is missed or duplicated
-- **Plan for full refreshes** - Document how to reset state
+source = rest_api_source(config)
+pipeline = dlt.pipeline(
+    pipeline_name="weather",
+    destination="duckdb",
+    dataset_name="weather_data"
+)
+pipeline.run(source)
+```
 
-### 6. API Considerations
-- **Respect rate limits** - Add delays or reduce parallelism if needed
-- **Handle pagination correctly** - Test with multiple pages
-- **Implement retries** - For transient failures
-- **Monitor API changes** - APIs evolve, pipelines need updates
+See: [references/rest-api-source.md](references/rest-api-source.md) (Non-REST Endpoint Resources, Query/Path Params, Single-Object Responses, include_from_parent).
+
+## Best Practices (Data Engineering)
+
+- **Secrets**: Use `.dlt/secrets.toml`; never hardcode; add to `.gitignore`
+- **Primary keys**: Set for merge operations and deduplication
+- **Write dispositions**: `append` (events), `merge` (stateful), `replace` (snapshots)
+- **Performance**: Yield pages not rows; use incremental loading when possible
+
+See [references/performance-tuning.md](references/performance-tuning.md), [references/incremental-loading.md](references/incremental-loading.md), and [references/troubleshooting.md](references/troubleshooting.md) for more.
 
 ## Common Challenges and Solutions
 
-### Challenge: Complex API Authentication
+**Auth (OAuth2):** In REST config use `"auth": {"type": "oauth2_client_credentials", ...}`. For custom Python use `dlt.sources.helpers.rest_client.auth.OAuth2ClientCredentials` with `paginate()`. See [references/rest-api-source.md](references/rest-api-source.md).
 
-**Solution**: For declarative REST API:
-```python
-# OAuth2
-"auth": {
-    "type": "oauth2_client_credentials",
-    "client_id": dlt.secrets["client_id"],
-    "client_secret": dlt.secrets["client_secret"],
-    "access_token_url": "https://auth.example.com/oauth/token"
-}
-```
+**Custom pagination / nested data / performance:** See [references/rest-api-source.md](references/rest-api-source.md), [references/custom-sources.md](references/custom-sources.md), [references/performance-tuning.md](references/performance-tuning.md).
 
-For custom Python, implement auth in requests:
-```python
-from dlt.sources.helpers.rest_client import paginate
-from dlt.sources.helpers.rest_client.auth import OAuth2ClientCredentials
+## Reference Documentation — When to Read What
 
-auth = OAuth2ClientCredentials(
-    client_id=dlt.secrets["client_id"],
-    client_secret=dlt.secrets["client_secret"],
-    access_token_url="https://auth.example.com/oauth/token"
-)
-
-for page in paginate(url, auth=auth):
-    yield page
-```
-
-See: [references/rest-api-source.md](references/rest-api-source.md) for more auth patterns
-
-### Challenge: Custom Pagination Logic
-
-**Solution**: Use custom Python for non-standard pagination:
-```python
-@dlt.resource
-def custom_paginated_resource():
-    page = 1
-    while True:
-        response = requests.get(f"{url}?page={page}")
-        data = response.json()
-
-        if not data:  # No more data
-            break
-
-        yield data
-        page += 1
-```
-
-### Challenge: Nested/Complex Data Structures
-
-**Solution**: Control table nesting:
-```python
-@dlt.source(max_table_nesting=2)  # Limit nested table depth
-def my_source():
-    return my_resource()
-```
-
-Or flatten data manually before yielding.
-
-### Challenge: Performance with Large Datasets
-
-**Solution**: See [references/performance-tuning.md](references/performance-tuning.md)
-
-Key optimizations:
-- Increase worker counts
-- Enable file rotation
-- Yield pages instead of rows
-- Use appropriate buffer sizes
-
-## Reference Documentation
-
-This skill includes comprehensive reference documentation:
-
-- **[core-concepts.md](references/core-concepts.md)** - dlt fundamentals, sources, resources, destinations
-- **[verified-sources.md](references/verified-sources.md)** - Using pre-built verified sources
-- **[rest-api-source.md](references/rest-api-source.md)** - Declarative REST API configuration
-- **[custom-sources.md](references/custom-sources.md)** - Creating custom Python sources
-- **[incremental-loading.md](references/incremental-loading.md)** - Incremental loading strategies
-- **[performance-tuning.md](references/performance-tuning.md)** - Performance optimization
-- **[troubleshooting.md](references/troubleshooting.md)** - Common issues and solutions
-
-Read these files when needed for detailed information on specific topics.
+- **Full workflow / step-by-step example** → [examples.md](examples.md)
+- **Verified source** → [references/verified-sources.md](references/verified-sources.md)
+- **Declarative REST API** → [references/rest-api-source.md](references/rest-api-source.md)
+- **Custom Python source** → [references/custom-sources.md](references/custom-sources.md)
+- **Incremental loading** → [references/incremental-loading.md](references/incremental-loading.md)
+- **Performance** → [references/performance-tuning.md](references/performance-tuning.md)
+- **Errors / debugging** → [references/troubleshooting.md](references/troubleshooting.md)
+- **dlt basics** → [references/core-concepts.md](references/core-concepts.md)
 
 ## Templates and Scripts
 
@@ -456,42 +371,8 @@ Read these files when needed for detailed information on specific topics.
 
 ### Scripts (scripts/)
 
-- **[install_packages.py](scripts/install_packages.py)** - Automatically install dlt packages with dependency manager detection (includes `workspace` extra by default)
-- **[open_dashboard.py](scripts/open_dashboard.py)** - Helper to open dlt pipeline dashboard (requires `dlt[workspace]`)
-
-## Workflow Example: Creating a Pokemon API Pipeline
-
-**User request**: "Create a pipeline ingesting data from https://pokeapi.co/api/v2/pokemon/ and https://pokeapi.co/api/v2/pokemon/{pokemon_name}"
-
-**Step-by-step:**
-
-1. **Analyze**: REST API with standard patterns → Use declarative approach
-2. **Destination**: Ask user (assume DuckDB for this example)
-3. **Create pipeline** using declarative REST template
-4. **Configure**:
-   ```python
-   config = {
-       "client": {"base_url": "https://pokeapi.co/api/v2/"},
-       "resources": [
-           {
-               "name": "pokemon_list",
-               "endpoint": "pokemon",
-               "write_disposition": "replace"
-           },
-           {
-               "name": "pokemon_details",
-               "endpoint": "pokemon/{name}",
-               "write_disposition": "merge",
-               "primary_key": "id",
-               "include_from_parent": ["name"]
-           }
-       ]
-   }
-   ```
-5. **No secrets needed** (public API)
-6. **Create pipeline code** with config
-7. **Test**: Run pipeline
-8. **Inspect**: Open dashboard to verify data
+- **[install_packages.py](scripts/install_packages.py)** - Install dlt + destination extras (includes `workspace`). Run when setting up a new project or adding a destination.
+- **[open_dashboard.py](scripts/open_dashboard.py)** - Open pipeline dashboard (`dlt pipeline <name> show`). Run after a pipeline run to inspect loaded data.
 
 ## Key Reminders
 - **Always ask about destination** - Don't assume

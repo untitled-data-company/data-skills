@@ -4,6 +4,7 @@
 - [What is dlt?](#what-is-dlt)
 - [Core Components](#core-components)
 - [Key Capabilities](#key-capabilities)
+- [Data Normalization and Nested Tables](#data-normalization-and-nested-tables)
 - [Basic Workflow](#basic-workflow)
 - [Configuration](#configuration)
 - [Write Dispositions](#write-dispositions)
@@ -58,6 +59,27 @@ load_info = pipeline.run(my_source())
 - Data normalization
 - Nested structure handling
 - Schema evolution support
+
+### Data Normalization and Nested Tables
+
+dlt **normalizes** nested data into separate tables:
+
+- **Arrays** become child tables with a `__` separator: e.g. `countries__capitals`.
+- Child tables have **`_dlt_parent_id`** referencing the parent row’s **`_dlt_id`**.
+- Array elements have **`_dlt_list_idx`** for ordering.
+
+**Example:** API returns `{"name": "France", "capitals": ["Paris"]}`
+
+- **Main table:** `countries` with columns `name`, `_dlt_id`.
+- **Child table:** `countries__capitals` with `value`, `_dlt_parent_id`, `_dlt_list_idx`.
+
+To query normalized data, join on the parent key:
+
+```sql
+SELECT c.name, cap.value AS capital
+FROM countries c
+JOIN countries__capitals cap ON c._dlt_id = cap._dlt_parent_id
+```
 
 ### Pipeline Automation
 - Incremental loading

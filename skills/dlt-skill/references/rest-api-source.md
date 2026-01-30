@@ -9,6 +9,10 @@
 - [Endpoint Configuration](#endpoint-configuration)
 - [Pagination Patterns](#pagination-patterns)
 - [Resource Relationships (Parent-Child)](#resource-relationships-parent-child)
+- [Non-REST Endpoint Resources (Seeding)](#non-rest-endpoint-resources-seeding)
+- [Query Params vs Path Params Resolve Syntax](#query-params-vs-path-params-resolve-syntax)
+- [Single-Object API Responses](#single-object-api-responses)
+- [include_from_parent Field Naming](#include_from_parent-field-naming)
 - [Incremental Loading](#incremental-loading)
 - [Processing Steps](#processing-steps)
 - [Resource Defaults](#resource-defaults)
@@ -296,6 +300,151 @@ Define child resources that depend on parent resources:
 - JSON body: `"json": {"issue": "{issue_id}"}`
 - Headers: `"headers": {"X-Issue-ID": "{issue_id}"}`
 
+## Non-REST Endpoint Resources (Seeding)
+
+You can seed REST API calls from database data or other non-API sources. A **seed resource** yields a **list of dicts**; each dict provides values for path/query placeholders in child REST resources. The REST source then issues one API request per seed row.
+
+**Requirements:**
+- Define a `@dlt.resource(selected=False)` function that **yields a list of dicts** (not individual items).
+- Include the seed resource in the `resources` array before any resources that reference it.
+- Reference seed fields in child endpoints using the resolve syntax (see [Query Params vs Path Params Resolve Syntax](#query-params-vs-path-params-resolve-syntax)).
+
+**Example: seeding from a Python list**
+```python
+import dlt
+from typing import Any, Dict, Generator, List
+from dlt.sources.rest_api import rest_api_source
+
+@dlt.resource(selected=False)
+def seed_data() -> Generator[List[Dict[str, Any]], Any, Any]:
+    """Must yield a LIST of dicts for the resolve pattern to work."""
+    yield [{"id": 1, "name": "foo"}, {"id": 2, "name": "bar"}]
+
+config = {
+    "client": {"base_url": "https://api.example.com/"},
+    "resources": [
+        seed_data(),  # Include the seed resource
+        {
+            "name": "details",
+            "endpoint": {
+                "path": "items/{id}",
+                "params": {
+                    "name": "{resources.seed_data.name}"  # Curly braces for query params
+                }
+            }
+        }
+    ]
+}
+
+source = rest_api_source(config)
+```
+
+**Example: reading from DuckDB to seed weather API calls**
+```python
+import duckdb
+import dlt
+from typing import Any, Dict, Generator, List
+from dlt.sources.rest_api import rest_api_source
+
+def get_locations_from_db():
+    """Read outside of dlt context to avoid pipeline conflicts."""
+    conn = duckdb.connect("locations.duckdb", read_only=True)
+    rows = conn.execute("SELECT id, lat, lng FROM locations").fetchall()
+    conn.close()
+    return [{"id": r[0], "lat": r[1], "lng": r[2]} for r in rows]
+
+@dlt.resource(selected=False)
+def locations() -> Generator[List[Dict[str, Any]], Any, Any]:
+    """Must yield a LIST so each row seeds one API call."""
+    yield get_locations_from_db()
+
+config = {
+    "client": {"base_url": "https://api.weather.com/"},
+    "resources": [
+        locations(),
+        {
+            "name": "weather",
+            "endpoint": {
+                "path": "forecast",
+                "params": {
+                    "lat": "{resources.locations.lat}",
+                    "lng": "{resources.locations.lng}"
+                },
+                "data_selector": "$",
+                "paginator": "single_page"
+            },
+            "include_from_parent": ["id"],
+            "primary_key": "_locations_id"
+        }
+    ]
+}
+```
+
+**Important:** The seed resource must **yield a single list** (e.g. `yield [row1, row2, ...]`). Yielding one item at a time will not drive one request per row.
+
+## Query Params vs Path Params Resolve Syntax
+
+**Path params** (placeholders in the URL path) use the **resolve dict**:
+
+```python
+"endpoint": {
+    "path": "repos/{owner}/{repo}/issues",
+    "params": {
+        "owner": {"type": "resolve", "resource": "repos", "field": "owner"},
+        "repo": {"type": "resolve", "resource": "repos", "field": "name"}
+    }
+}
+```
+
+**Query params** use **curly-brace string** syntax with `{resources.<resource_name>.<field>}`:
+
+```python
+"endpoint": {
+    "path": "forecast",
+    "params": {
+        "latitude": "{resources.locations.lat}",
+        "longitude": "{resources.locations.lng}"
+    }
+}
+```
+
+Use the resolve dict for path segments and the `{resources....}` form for query parameters.
+
+## Single-Object API Responses
+
+Some APIs return a **single object** instead of a list (e.g. one forecast per request). Configure the endpoint so the whole response is treated as one item and pagination is disabled:
+
+```python
+"endpoint": {
+    "path": "forecast",
+    "params": {
+        "latitude": "{resources.locations.lat}",
+        "longitude": "{resources.locations.lng}"
+    },
+    "data_selector": "$",       # Treat entire response as single item
+    "paginator": "single_page"  # No pagination needed
+}
+```
+
+- `data_selector`: `"$"` means use the root of the response as the one record.
+- `paginator`: `"single_page"` stops the client from requesting further pages.
+
+## include_from_parent Field Naming
+
+Fields brought in from a parent (or seed) resource are prefixed with `_<parent_resource_name>_` in the loaded table.
+
+```python
+"include_from_parent": ["id", "name"]
+# Results in columns: _parent_resource_id, _parent_resource_name
+```
+
+If you use such a field as primary key, use the **prefixed** name:
+
+```python
+"include_from_parent": ["id"],
+"primary_key": "_parent_resource_id"
+```
+
 ## Incremental Loading
 
 Load only new or changed data:
@@ -475,5 +624,6 @@ config = {
 
 ### Child Resources Not Loading
 - Ensure parent resource has required fields
-- Check placeholder syntax: `{field_name}`
+- Check placeholder syntax: `{field_name}` or `{resources.<resource>.<field>}` for query params
 - Verify `include_from_parent` includes needed fields
+- For seed resources: ensure the seed yields a **list** of dicts, not one item per yield
