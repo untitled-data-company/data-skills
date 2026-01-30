@@ -1,5 +1,7 @@
 # dlt-skill
 
+**Version 0.1.0**
+
 Expert assistant skill for creating and maintaining dlt (data load tool) data pipelines.
 
 ## Overview

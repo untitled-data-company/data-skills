@@ -1,5 +1,6 @@
 ---
 name: dlt-skill
+version: 0.1.0
 description: >
   Expert assistant for creating and maintaining dlt (data load tool) data pipelines.
   Use this skill when users want to create data ingestion pipelines from APIs, databases,
