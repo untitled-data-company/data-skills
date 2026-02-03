@@ -11,6 +11,7 @@ This repository contains expert assistant skills designed to help with data engi
 | Skill | Description | Version | Docs |
 |-------|-------------|---------|------|
 | [dlt-skill](skills/dlt-skill/) | Data pipelines with [dlt](https://dlthub.com) (data load tool) | 0.1.0 | [Guide](docs/dlt-skill.md) |
+| [uv](skills/uv/) | Python dependencies, venvs, and scripts with [uv](https://docs.astral.sh/uv/) | 0.1.0 | [Guide](docs/uv.md) |
 
 ## Installation
 
@@ -26,6 +27,12 @@ For example, to install the dlt-skill:
 npx skills add untitled-data-company/data-skills --skill dlt-skill
 ```
 
+To install the uv (Python environments) skill:
+
+```bash
+npx skills add untitled-data-company/data-skills --skill uv
+```
+
 ### Verify Installation
 
 After installation, the skill should appear when you run `/skills` in Claude Code.
@@ -35,15 +42,19 @@ After installation, the skill should appear when you run `/skills` in Claude Cod
 ```
 data-skills/
 ├── skills/
-│   └── dlt-skill/       # Skill package (for Claude)
-│       ├── SKILL.md     # Main skill instructions
-│       ├── assets/      # Templates and configurations
-│       ├── references/  # Reference documentation
-│       └── scripts/     # Helper scripts
+│   ├── dlt-skill/       # Data pipelines (dlt)
+│   │   ├── SKILL.md
+│   │   ├── assets/
+│   │   ├── references/
+│   │   └── scripts/
+│   └── uv/              # Python venvs & deps (uv)
+│       ├── SKILL.md
+│       └── references/
 ├── docs/                # User documentation
-│   └── dlt-skill.md     # dlt-skill guide
-├── README.md            # This file
-└── CHANGELOG.md         # Version history
+│   ├── dlt-skill.md
+│   └── uv.md
+├── README.md
+└── CHANGELOG.md
 ```
 
 ## Contributing
