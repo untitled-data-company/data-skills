@@ -1,17 +1,21 @@
 # Changelog
 
-All notable changes to the dlt-skill will be documented in this file.
+All notable changes to the **data-skills** repository are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.2.0] - 2026-02-04
+
+### Added
+- **dlt-dagster** skill: run dlt pipelines in Dagster (Component or Pythonic @dlt_assets, standard Dagster asset, external compute via dagster-integrations). References: component, pythonic, secrets-env, jobs-schedules, incremental-backfill-parallel, cloud-deployment, troubleshooting. Related skills: dlt-skill, dagster-integrations with install commands.
+
 ### Changed
-- Reorganized repository structure with `skills/` folder
-- Moved dlt-skill to `skills/dlt-skill/`
-- Updated README.md as repository overview with links to individual skills
-- Added skill-specific README.md for dlt-skill
+- README: single generic installation command; removed per-skill install examples. Added dlt-dagster to Available Skills and repository structure.
 
 ## [0.1.0] - 2026-01-30
 
@@ -54,4 +58,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Performance optimization strategies
 - Incremental loading patterns
 
-[0.1.0]: https://github.com/mucio-at-untitled-data-company/dlt-skill/releases/tag/v0.1.0
+[0.2.0]: https://github.com/untitled-data-company/data-skills/releases/tag/v0.2.0
+[0.1.0]: https://github.com/untitled-data-company/data-skills/releases/tag/v0.1.0

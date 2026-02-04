@@ -8,11 +8,11 @@ This repository contains expert assistant skills designed to help with data engi
 
 ## Available Skills
 
-| Skill | Description | Version | Docs |
-|-------|-------------|---------|------|
-| [dlt-skill](skills/dlt-skill/) | Data pipelines with [dlt](https://dlthub.com) (data load tool) | 0.1.0 | [Guide](docs/dlt-skill.md) |
-| [dlt-dagster](skills/dlt-dagster/) | Run dlt pipelines in [Dagster](https://dagster.io) (Component or Pythonic @dlt_assets) | 0.1.0 | — |
-| [uv](skills/uv/) | Python dependencies, venvs, and scripts with [uv](https://docs.astral.sh/uv/) | 0.1.0 | [Guide](docs/uv.md) |
+| Skill | Description | Docs |
+|-------|-------------|------|
+| [dlt-skill](skills/dlt-skill/) | Data pipelines with [dlt](https://dlthub.com) (data load tool) | [Guide](docs/dlt-skill.md) |
+| [dlt-dagster](skills/dlt-dagster/) | Run dlt pipelines in [Dagster](https://dagster.io) (Component or Pythonic @dlt_assets) | — |
+| [uv](skills/uv/) | Python dependencies, venvs, and scripts with [uv](https://docs.astral.sh/uv/) | [Guide](docs/uv.md) |
 
 ## Installation
 
