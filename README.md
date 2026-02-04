@@ -22,23 +22,7 @@ Install skills using the Claude Code CLI:
 npx skills add untitled-data-company/data-skills --skill <skill-name>
 ```
 
-For example, to install the dlt-skill:
-
-```bash
-npx skills add untitled-data-company/data-skills --skill dlt-skill
-```
-
-To install the dlt-dagster (dlt on Dagster) skill:
-
-```bash
-npx skills add untitled-data-company/data-skills --skill dlt-dagster
-```
-
-To install the uv (Python environments) skill:
-
-```bash
-npx skills add untitled-data-company/data-skills --skill uv
-```
+Replace `<skill-name>` with the skill directory name (e.g. `dlt-skill`, `dlt-dagster`, `uv`). See the [Available Skills](#available-skills) table above.
 
 ### Verify Installation
 
