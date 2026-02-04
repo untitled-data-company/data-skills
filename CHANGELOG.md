@@ -9,6 +9,10 @@ When updating: compare with the repo since the last release (e.g. `git log v0.2.
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.2.1] - 2026-02-05
+
 ### Added
 - **dlt-skill:** REST API resource config: document dlt resource parameters (e.g. `max_table_nesting`, `table_name`, `selected`) in the resource dict in rest-api-source.md; single-table example and best practice (config over `apply_hints`). Cross-reference in custom-sources.md; resource-level options bullet in SKILL.md.
 
@@ -32,5 +36,6 @@ When updating: compare with the repo since the last release (e.g. `git log v0.2.
 - **dlt-skill:** Data pipelines with dlt (verified sources, declarative REST, custom Python). Refs: core concepts, verified sources, REST API, custom sources, incremental loading, performance, troubleshooting. Templates and scripts (install_packages, open_dashboard).
 - **Repo:** README, CHANGELOG. (Later: skills/ layout.)
 
+[0.2.1]: https://github.com/untitled-data-company/data-skills/releases/tag/v0.2.1
 [0.2.0]: https://github.com/untitled-data-company/data-skills/releases/tag/v0.2.0
 [0.1.0]: https://github.com/untitled-data-company/data-skills/releases/tag/v0.1.0
