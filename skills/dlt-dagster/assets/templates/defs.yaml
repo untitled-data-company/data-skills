@@ -1,0 +1,11 @@
+# Minimal defs.yaml for one dlt load. Copy into defs/<component_name>/defs.yaml and edit.
+# Point source and pipeline at the variables in loads.py (dotted path from component module).
+type: dagster_dlt.DltLoadCollectionComponent
+attributes:
+  loads:
+    - source: .loads.my_load_source
+      pipeline: .loads.my_load_pipeline
+  # Optional: customize emitted Dagster assets
+  # translation:
+  #   group_name: my_group
+  #   description: "Load from my source"
