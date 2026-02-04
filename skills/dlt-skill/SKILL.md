@@ -138,6 +138,7 @@ Flesh out the pipeline code based on requirements:
 - Define client configuration (base_url, auth)
 - Configure resources and endpoints
 - Set up pagination and incremental loading
+- Resource-level options (e.g. `max_table_nesting`, `table_name`) are set in the resource dict in the config; see [references/rest-api-source.md](references/rest-api-source.md) Resource configuration.
 - See: [references/rest-api-source.md](references/rest-api-source.md)
 
 **For Custom Python**:
@@ -349,7 +350,7 @@ See [references/performance-tuning.md](references/performance-tuning.md), [refer
 
 ## Reference Documentation — When to Read What
 
-- **Full workflow / step-by-step example** → [examples.md](examples.md)
+- **Full workflow / step-by-step example** → [references/examples.md](references/examples.md)
 - **Verified source** → [references/verified-sources.md](references/verified-sources.md)
 - **Declarative REST API** → [references/rest-api-source.md](references/rest-api-source.md)
 - **Custom Python source** → [references/custom-sources.md](references/custom-sources.md)

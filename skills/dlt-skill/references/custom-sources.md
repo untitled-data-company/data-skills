@@ -197,7 +197,7 @@ def my_source():
     return my_resource()
 ```
 
-Limits how deeply nested tables are generated from nested data structures.
+Limits how deeply nested tables are generated from nested data structures. For the declarative REST API source, set `max_table_nesting` per resource in the resource dict; see [rest-api-source.md](rest-api-source.md) Resource configuration.
 
 ### Resource Selection
 Enable users to select specific resources:

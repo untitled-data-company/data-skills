@@ -1,5 +1,17 @@
 # uv Usage Examples
 
+## Table of Contents
+- [New project from scratch](#new-project-from-scratch)
+- [Add a dependency to existing project](#add-a-dependency-to-existing-project)
+- [Run script with inline dependencies (no project)](#run-script-with-inline-dependencies-no-project)
+- [Run script via shebang (executable without typing uv run)](#run-script-via-shebang-executable-without-typing-uv-run)
+- [One-off CLI tool](#one-off-cli-tool)
+- [Convert from requirements.txt to uv](#convert-from-requirementstxt-to-uv-pyprojecttoml--uvlock)
+- [Use uv with existing requirements.txt (no conversion)](#use-uv-with-existing-requirementstxt-no-conversion)
+- [Pin and use specific Python](#pin-and-use-specific-python)
+- [Run with different Python (one-off)](#run-with-different-python-one-off)
+- [Migrate from Poetry or Pipenv to uv](#migrate-from-poetry-or-pipenv-to-uv)
+
 ## New project from scratch
 
 ```bash

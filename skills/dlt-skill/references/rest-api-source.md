@@ -6,6 +6,7 @@
 - [Client Configuration](#client-configuration)
 - [Authentication Methods](#authentication-methods)
 - [Resource Configuration](#resource-configuration)
+- [dlt resource parameters in the resource dict](#dlt-resource-parameters-in-the-resource-dict)
 - [Endpoint Configuration](#endpoint-configuration)
 - [Pagination Patterns](#pagination-patterns)
 - [Resource Relationships (Parent-Child)](#resource-relationships-parent-child)
@@ -172,6 +173,40 @@ source = rest_api_source(config)
     }
 ]
 ```
+
+### dlt resource parameters in the resource dict
+
+The REST API source accepts the same **dlt resource parameters** in each resource definition as documented in the [official Resource configuration](https://dlthub.com/docs/dlt-ecosystem/verified-sources/rest_api/basic#resource-configuration). You can set both dlt resource parameters and rest_api-specific parameters (`endpoint`, `include_from_parent`, `processing_steps`, `auth`) in the same resource dict.
+
+**dlt resource parameters** (in the resource dict):
+
+- **`name`** — Resource name; also used as table name unless overridden by `table_name`.
+- **`write_disposition`** — How to write data (`append`, `replace`, `merge`).
+- **`primary_key`** — Primary key field(s) for merge operations.
+- **`table_name`** — Override the destination table name for this resource.
+- **`max_table_nesting`** — Sets the maximum depth of nested tables; beyond that, nodes are loaded as structs or JSON. Use `0` for a single table (no child tables).
+- **`selected`** — Whether the resource is selected for loading (e.g. `false` for seed-only resources).
+
+**Example: load a resource as a single table (config only)**
+
+To load a resource as one table with no child tables, set `max_table_nesting`: `0` in the resource config:
+
+```python
+{
+    "name": "pokemon_details",
+    "max_table_nesting": 0,
+    "endpoint": {
+        "path": "pokemon/{name}",
+        "data_selector": "$",
+        "paginator": "single_page",
+    },
+    "include_from_parent": ["name"],
+    "primary_key": "id",
+    "write_disposition": "merge",
+}
+```
+
+For a single table (no nested child tables), set `max_table_nesting`: `0` in the resource config instead of using `apply_hints` after the source is created.
 
 ## Endpoint Configuration
 
@@ -604,6 +639,7 @@ config = {
 8. **Leverage parent-child relationships** - Model API dependencies correctly
 9. **Store secrets properly** - Never hardcode credentials
 10. **Monitor rate limits** - Be aware of API rate limiting
+11. **Single table via config** - For a single table (no nested child tables), set `max_table_nesting`: `0` in the resource config instead of using `apply_hints` after the source is created.
 
 ## Troubleshooting
 

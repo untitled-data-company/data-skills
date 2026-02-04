@@ -1,6 +1,12 @@
 # Workflow Examples
 
-Full step-by-step walkthroughs. For minimal code patterns see the Pipeline Patterns section in [SKILL.md](SKILL.md).
+Full step-by-step walkthroughs. For minimal code patterns see the Pipeline Patterns section in [SKILL.md](../SKILL.md).
+
+## Table of Contents
+- [Creating a Pokemon API Pipeline](#creating-a-pokemon-api-pipeline)
+- [Setting Up a GitHub Verified Source](#setting-up-a-github-verified-source)
+- [Custom Python Pipeline with Database Source](#custom-python-pipeline-with-database-source)
+- [Declarative REST API with Authentication](#declarative-rest-api-with-authentication)
 
 ## Creating a Pokemon API Pipeline
 
