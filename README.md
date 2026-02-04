@@ -11,6 +11,7 @@ This repository contains expert assistant skills designed to help with data engi
 | Skill | Description | Version | Docs |
 |-------|-------------|---------|------|
 | [dlt-skill](skills/dlt-skill/) | Data pipelines with [dlt](https://dlthub.com) (data load tool) | 0.1.0 | [Guide](docs/dlt-skill.md) |
+| [dlt-dagster](skills/dlt-dagster/) | Run dlt pipelines in [Dagster](https://dagster.io) (Component or Pythonic @dlt_assets) | 0.1.0 | — |
 | [uv](skills/uv/) | Python dependencies, venvs, and scripts with [uv](https://docs.astral.sh/uv/) | 0.1.0 | [Guide](docs/uv.md) |
 
 ## Installation
@@ -25,6 +26,12 @@ For example, to install the dlt-skill:
 
 ```bash
 npx skills add untitled-data-company/data-skills --skill dlt-skill
+```
+
+To install the dlt-dagster (dlt on Dagster) skill:
+
+```bash
+npx skills add untitled-data-company/data-skills --skill dlt-dagster
 ```
 
 To install the uv (Python environments) skill:
@@ -47,6 +54,10 @@ data-skills/
 │   │   ├── assets/
 │   │   ├── references/
 │   │   └── scripts/
+│   ├── dlt-dagster/     # dlt pipelines in Dagster
+│   │   ├── SKILL.md
+│   │   ├── assets/templates/
+│   │   └── references/
 │   └── uv/              # Python venvs & deps (uv)
 │       ├── SKILL.md
 │       └── references/
